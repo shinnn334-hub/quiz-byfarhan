@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Interaktif: Organisasi dan Manajemen (Pertemuan 1)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .correct {
+            background-color: #d1fae5 !important;
+            border-color: #10b981 !important;
+            color: #065f46 !important;
+        }
+        .incorrect {
+            background-color: #fee2e2 !important;
+            border-color: #ef4444 !important;
+            color: #991b1b !important;
+        }
+        .disabled-option {
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen py-8 px-4 font-sans">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <header class="bg-white rounded-xl shadow-md p-6 mb-8 border-t-4 border-blue-600">
+            <h1 class="text-2xl md:text-3xl font-bold text-slate-800">Kuis Interaktif: Organisasi & Manajemen</h1>
+            <p class="text-slate-600 mt-2">Materi Pertemuan 1 - Fakultas Ekonomi dan Bisnis Universitas Nasional</p>
+            <div class="mt-4 flex flex-wrap gap-4 text-sm font-semibold">
+                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full">50 Pilihan Ganda</span>
+                <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full">10 Soal Esai</span>
+                <span id="score-display" class="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full">Skor PG: 0 / 50</span>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <div class="flex border-b border-slate-200 mb-6">
+            <button id="tab-pg" onclick="switchTab('pg')" class="py-2 px-6 font-semibold border-b-2 border-blue-600 text-blue-600 focus:outline-none">Pilihan Ganda (50)</button>
+            <button id="tab-essay" onclick="switchTab('essay')" class="py-2 px-6 font-semibold text-slate-500 hover:text-blue-600 border-b-2 border-transparent focus:outline-none">Soal Esai (10)</button>
+        </div>
+
+        <!-- Section Pilihan Ganda -->
+        <div id="section-pg" class="space-y-6">
+            <!-- Questions will be dynamically injected here -->
+        </div>
+
+        <!-- Section Essay -->
+        <div id="section-essay" class="space-y-6 hidden">
+            <!-- Essay Questions will be dynamically injected here -->
+        </div>
+    </div>
+
+    <script>
+        const pgData = [
+            {
+                q: "1. Pengertian organisasi menurut Griffin (2002) menekankan pada...",
+                options: [
+                    "Sekelompok orang yang bekerja sama dalam struktur dan koordinasi tertentu untuk mencapai tujuan.",
+                    "Seni dalam menyelesaikan sesuatu melalui orang lain secara individu.",
+                    "Proses bisnis profit untuk menghasilkan keuntungan sebesar-besarnya.",
+                    "Lembaga pendidikan dan pemerintahan yang bersifat non-profit."
+                ],
+                correct: 0,
+                explanation: "Griffin (2002) mendefinisikan organisasi sebagai sekelompok orang yang bekerjasama dalam struktur dan koordinasi tertentu dalam mencapai serangkaian tujuan tertentu."
+            },
+            {
+                q: "2. Menurut Ernie & Kurniawan (2005), organisasi adalah sekumpulan orang yang berupaya mewujudkan tujuannya melalui...",
+                options: [
+                    "Kompetisi internal secara ketat",
+                    "Kerja sama",
+                    "Instruksi pimpinan secara sepihak",
+                    "Penggunaan modal keuangan saja"
+                ],
+                correct: 1,
+                explanation: "Ernie & Kurniawan (2005) menyatakan bahwa organisasi mewujudkan tujuannya melalui kerja sama."
+            },
+            {
+                q: "3. Manakah dari pilihan berikut yang merupakan contoh organisasi profit jenis perusahaan manufaktur?",
+                options: [
+                    "Pemerintah Daerah",
+                    "Yayasan Sosial",
+                    "Pabrik Tekstil / Otomotif",
+                    "Lembaga Pendidikan Negeri"
+                ],
+                correct: 2,
+                explanation: "Perusahaan manufaktur tergolong dalam organisasi profit."
+            },
+            {
+                q: "4. Lembaga Pendidikan Negeri dan Yayasan Sosial dikategorikan sebagai jenis organisasi...",
+                options: [
+                    "Organisasi Profit Perusahaan Besar",
+                    "Organisasi Multinasional",
+                    "Organisasi Non-Profit / Nirlaba",
+                    "Koperasi Komersial"
+                ],
+                correct: 2,
+                explanation: "Lembaga Pendidikan Negeri dan Yayasan Sosial adalah contoh organisasi Non Profit/Nirlaba."
+            },
+            {
+                q: "5. Asal kata 'Manajemen' berasal dari frasa 'To Manage' yang memiliki arti...",
+                options: [
+                    "Mengatur, memproduksi, menjual",
+                    "Mengurus, mengelola, menata laksana",
+                    "Menilai, mengawasi, memberi sanksi",
+                    "Memimpin, mengarahkan, membiayai"
+                ],
+                correct: 1,
+                explanation: "To Manage berarti mengurus, mengelola, menata laksana."
+            },
+            {
+                q: "6. Tokoh yang mendefinisikan manajemen sebagai 'The art of Getting Things Done Through People' adalah...",
+                options: [
+                    "James A.F. Stoner",
+                    "Mary Parker Follett",
+                    "Peter Drucker",
+                    "Ricky W. Griffin"
+                ],
+                correct: 1,
+                explanation: "Mary Parker Follett mendefinisikan manajemen sebagai seni mencapai tujuan melalui orang-orang."
+            },
+            {
+                q: "7. Menurut James A.F. Stoner, manajemen adalah proses kegiatan yang mencakup...",
+                options: [
+                    "Perencanaan, pengorganisasian, memimpin, dan mengarahkan sumber daya",
+                    "Pengawasan dan koreksi keuangan semata",
+                    "Pemasaran, produksi, dan rekrutmen karyawan",
+                    "Pengembangan gagasan dan strategi pemasaran"
+                ],
+                correct: 0,
+                explanation: "Stoner mendefinisikan manajemen sebagai proses merencanakan, mengorganisasikan, memimpin, dan mengarahkan sumber daya."
+            },
+            {
+                q: "8. Nickels, McHugh and McHugh (1997) mendefinisikan manajemen sebagai rangkaian kegiatan...",
+                options: [
+                    "Penjualan, pembelian, dan pendistribusian barang",
+                    "Perencanaan, pengorganisasian, pengarahan, dan pengendalian orang serta sumber daya",
+                    "Pelatihan, rekrutmen, dan evaluasi hasil kerja",
+                    "Pengkoordinasian dan pelaporan kinerja bulanan"
+                ],
+                correct: 1,
+                explanation: "Definisi Nickels et al. mencakup perencanaan, pengorganisasian, pengarahan, dan pengendalian orang & sumber daya."
+            },
+            {
+                q: "9. Sumber daya organisasi yang mencakup data, petunjuk, dan analisis lingkungan tergolong ke dalam...",
+                options: [
+                    "Sumber Daya Manusia",
+                    "Sumber Daya Fisik",
+                    "Sumber Daya Informasi",
+                    "Sumber Daya Alam"
+                ],
+                correct: 2,
+                explanation: "Data dan analisis termasuk dalam Sumber Daya Informasi."
+            },
+            {
+                q: "10. Pengertian 'Efektif' menurut Peter Drucker adalah...",
+                options: [
+                    "Mengerjakan pekerjaan dengan benar atau tepat",
+                    "Mengerjakan pekerjaan yang benar atau tepat",
+                    "Menghemat biaya operasional seminimal mungkin",
+                    "Menyelesaikan pekerjaan dalam waktu singkat"
+                ],
+                correct: 1,
+                explanation: "Efektif = mengerjakan pekerjaan yang benar/tepat (Doing the right things)."
+            },
+            {
+                q: "11. Pengertian 'Efisien' menurut Peter Drucker adalah...",
+                options: [
+                    "Mengerjakan pekerjaan yang benar atau tepat",
+                    "Mengerjakan pekerjaan dengan benar atau tepat",
+                    "Menetapakan tujuan yang tinggi",
+                    "Menghasilkan output tanpa memperhitungkan biaya"
+                ],
+                correct: 1,
+                explanation: "Efisien = mengerjakan pekerjaan dengan benar/tepat (Doing things right)."
+            },
+            {
+                q: "12. Urutan fungsi manajemen dasar secara umum adalah...",
+                options: [
+                    "Controlling, Planning, Organizing, Leading",
+                    "Planning, Organizing, Directing/Leading, Controlling",
+                    "Leading, Planning, Controlling, Organizing",
+                    "Organizing, Planning, Directing, Controlling"
+                ],
+                correct: 1,
+                explanation: "Fungsi manajemen berurutan dari Perencanaan, Pengorganisasian, Pengarahan/Kepemimpinan, hingga Pengawasan/Pengendalian."
+            },
+            {
+                q: "13. Fungsi manajemen yang menyangkut penetapan sasaran dan tindakan terbaik untuk mencapai sasaran adalah...",
+                options: [
+                    "Perencanaan (Planning)",
+                    "Pengorganisasian (Organizing)",
+                    "Pengarahan (Directing)",
+                    "Pengendalian (Controlling)"
+                ],
+                correct: 0,
+                explanation: "Planning adalah proses menetapkan sasaran dan tindakan untuk mencapai sasaran."
+            },
+            {
+                q: "14. Menentukan apa yang perlu dilaksanakan, bagaimana cara melaksanakan, dan siapa yang melaksanakan merupakan fungsi...",
+                options: [
+                    "Planning",
+                    "Organizing",
+                    "Leading",
+                    "Controlling"
+                ],
+                correct: 1,
+                explanation: "Organizing menentukan pembagian tugas, prosedur, dan pelaksana pekerjaan."
+            },
+            {
+                q: "15. Kegiatan merumuskan strategi dan menentukan indikator keberhasilan termasuk dalam kegiatan fungsi...",
+                options: [
+                    "Pengorganisasian",
+                    "Pengarahan",
+                    "Perencanaan",
+                    "Pengawasan"
+                ],
+                correct: 2,
+                explanation: "Merumuskan strategi dan indikator keberhasilan dilakukan dalam fungsi Perencanaan (Planning)."
+            },
+            {
+                q:
